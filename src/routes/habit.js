@@ -18,22 +18,22 @@ router.post('/', async (req, res) => {
   });
 
 
-  router.get('/:userId', async (req, res) => {
-    try{
-    const userId = req.params.userId ;
-    const habits = await Habit.findOne(userId).select('name userId');
-    console.log('rrrrrrrrrrrrrrrrrrrrr',habits);
-    res.json({habit:habits});
-    }
-    catch(e){
-        res.status(500).send('Server error');
-    }
-  });
+  // router.get('/:userId', async (req, res) => {
+  //   try{
+  //   const userId = req.params.userId ;
+  //   const habits = await Habit.findOne(userId).select('name userId');
+  //   console.log('rrrrrrrrrrrrrrrrrrrrr',habits);
+  //   res.json({habit:habits});
+  //   }
+  //   catch(e){
+  //       res.status(500).send('Server error');
+  //   }
+  // });
 
-  router.get('/:userId', async (req, res) => {
+  router.get('/for-user/:userId', async (req, res) => {
     try {
-      const { id } = req.params;
-      const habit = await Habit.find({ Code: id }); // Find habit by the Code field
+      const { userId } = req.params;
+      const habit = await Habit.find({userId}); // Find habit by the Code field
   
       if (!habit) {
         return res.status(404).json({ message: 'habit not found' });
@@ -55,9 +55,13 @@ router.post('/', async (req, res) => {
 
   router.get('/:habitId', async (req, res) => {
     try {
-      const { id } = req.params;
-      const habit = await Habit.findById(id);
-      console.log('habit',habit);
+      const { habitId } = req.params;
+  
+      // If habitId is a valid ObjectId, convert it
+      const habit = await Habit.findById(habitId);
+      
+      console.log('Habit:', habit);
+  
       if (!habit) {
         return res.status(404).json({ message: 'Habit not found' });
       }
@@ -67,6 +71,7 @@ router.post('/', async (req, res) => {
       res.status(500).json({ message: 'Server error', error });
     }
   });
+  
 
   router.put('/:habitId', async (req, res) => {
     const { habitId } = req.params;
